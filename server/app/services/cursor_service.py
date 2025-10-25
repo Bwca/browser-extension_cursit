@@ -179,7 +179,7 @@ class CursorService:
         win32api.keybd_event(VK_ESCAPE, 0, 0, 0)
         time.sleep(0.02)
         win32api.keybd_event(VK_ESCAPE, 0, 0x0002, 0)
-        time.sleep(0.3)
+        time.sleep(0.75)
         
         # Ctrl+L to open chat
         win32api.keybd_event(VK_CONTROL, 0, 0, 0)
