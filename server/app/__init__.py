@@ -1,6 +1,14 @@
 """
 Application factory for the Cursor HTTP Server.
+
+Author: Volodymyr Yepishev
+License: GPL-3.0
 """
+
+__version__ = '0.1.0'
+__author__ = 'Volodymyr Yepishev'
+__license__ = 'GPL-3.0'
+
 from flask import Flask
 from app.config import Config
 from app.utils.logger import setup_logging

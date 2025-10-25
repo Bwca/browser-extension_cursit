@@ -1,6 +1,9 @@
 {
   "name": "cursit-chrome-extension",
   "version": "0.0.0",
+  "description": "Browser extension that integrates GitHub and Azure DevOps PR comments with Cursor IDE",
+  "author": "Volodymyr Yepishev",
+  "license": "GPL-3.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
