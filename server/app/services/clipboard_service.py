@@ -1,3 +1,14 @@
+# ============================================================================
+# Project: CursIt - Cursor IDE Integration for GitHub & Azure DevOps
+# File: server/app/services/clipboard_service.py
+# Purpose: Clipboard operations service
+#
+# Copyright (c) 2025 Volodymyr Yepishev
+#              All rights reserved.
+#
+# Licensed under GNU General Public License v3.0
+# ============================================================================
+
 """
 Clipboard operations service.
 """

@@ -1,3 +1,15 @@
+/* ============================================================================
+ * Project: CursIt - Cursor IDE Integration for GitHub & Azure DevOps
+ * File: browser-extension/src/extension-scripts/add-resolve-buttons/azure-devops-add-resolve-button-builder.ts
+ * Purpose: Azure DevOps-specific implementation for adding Cursor buttons to PR comments
+ *
+ * Copyright (c) 2025 Volodymyr Yepishev
+ *              All rights reserved.
+ *
+ * Licensed under GNU General Public License v3.0
+ * ============================================================================
+ */
+
 import { AddResolveButtonBuilder } from './add-resolve-button-builder';
 
 export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder {
@@ -21,7 +33,7 @@ export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder 
       while (currentElement && attempts < maxAttempts) {
         // Look for the file path span in the current level and all descendants
         const filePathSpan = currentElement.querySelector(
-          'span.body-s.secondary-text.text-ellipsis'
+          'span.body-s.secondary-text.text-ellipsis',
         );
         if (filePathSpan) {
           const filePath = filePathSpan.textContent?.trim();
@@ -37,7 +49,7 @@ export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder 
         const fileHeader = currentElement.querySelector('.comment-file-header');
         if (fileHeader) {
           const filePathSpan2 = fileHeader.querySelector(
-            'span.body-s.secondary-text.text-ellipsis, span.body-s.secondary-text'
+            'span.body-s.secondary-text.text-ellipsis, span.body-s.secondary-text',
           );
           if (filePathSpan2) {
             const filePath = filePathSpan2.textContent?.trim();
@@ -108,7 +120,7 @@ export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder 
     if (commentViewer) {
       const fileInfoElements = commentViewer.querySelectorAll('[data-file-path], [title*="/"]');
       console.log(
-        `CursIt-Extension: Searching ${fileInfoElements.length} elements with data-file-path or title attributes`
+        `CursIt-Extension: Searching ${fileInfoElements.length} elements with data-file-path or title attributes`,
       );
       for (const element of fileInfoElements) {
         const filePath = element.getAttribute('data-file-path') || element.getAttribute('title');
@@ -142,7 +154,7 @@ export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder 
 
     if (codeSnippets.length > 0) {
       console.log(
-        `CursIt-Extension: Extracted ${codeSnippets.length} code snippet(s) from Azure DevOps comment.`
+        `CursIt-Extension: Extracted ${codeSnippets.length} code snippet(s) from Azure DevOps comment.`,
       );
       return codeSnippets.join('\n\n---\n\n');
     }

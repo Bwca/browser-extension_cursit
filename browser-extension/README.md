@@ -7,7 +7,6 @@ Browser extension that integrates GitHub/Azure DevOps PR comments with Cursor ID
 ### Two Button Types:
 
 1. **Take to Cursor** (Blue button)
-
    - Always visible on all PR comments
    - Opens the file in Cursor
    - Pastes the full comment + code snippets into chat

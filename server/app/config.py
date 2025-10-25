@@ -1,3 +1,14 @@
+# ============================================================================
+# Project: CursIt - Cursor IDE Integration for GitHub & Azure DevOps
+# File: server/app/config.py
+# Purpose: Configuration management - environment-based settings
+#
+# Copyright (c) 2025 Volodymyr Yepishev
+#              All rights reserved.
+#
+# Licensed under GNU General Public License v3.0
+# ============================================================================
+
 """
 Configuration module for the Cursor HTTP Server.
 """

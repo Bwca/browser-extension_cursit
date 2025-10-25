@@ -1,3 +1,15 @@
+/* ============================================================================
+ * Project: CursIt - Cursor IDE Integration for GitHub & Azure DevOps
+ * File: browser-extension/src/extension-scripts/add-resolve-buttons/github-add-resolve-button-builder.ts
+ * Purpose: GitHub-specific implementation for adding Cursor buttons to PR comments
+ *
+ * Copyright (c) 2025 Volodymyr Yepishev
+ *              All rights reserved.
+ *
+ * Licensed under GNU General Public License v3.0
+ * ============================================================================
+ */
+
 import { AddResolveButtonBuilder } from './add-resolve-button-builder';
 
 export class GitHubAddResolveButtonBuilder extends AddResolveButtonBuilder {
@@ -35,7 +47,7 @@ export class GitHubAddResolveButtonBuilder extends AddResolveButtonBuilder {
 
       // Strategy 3: Look for hidden input field in suggestion forms.
       const suggestionForm = reviewThreadComponent.querySelector(
-        'form.js-single-suggested-change-form'
+        'form.js-single-suggested-change-form',
       );
       if (suggestionForm) {
         const pathInput = suggestionForm.querySelector('input[name="path"]');

@@ -1,3 +1,15 @@
+/* ============================================================================
+ * Project: CursIt - Cursor IDE Integration for GitHub & Azure DevOps
+ * File: browser-extension/src/app/app.ts
+ * Purpose: Main application component - manages repository mappings UI
+ *
+ * Copyright (c) 2025 Volodymyr Yepishev
+ *              All rights reserved.
+ *
+ * Licensed under GNU General Public License v3.0
+ * ============================================================================
+ */
+
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

@@ -1,3 +1,15 @@
+/* ============================================================================
+ * Project: CursIt - Cursor IDE Integration for GitHub & Azure DevOps
+ * File: browser-extension/src/extension-scripts/background.ts
+ * Purpose: Extension service worker - handles messages and server communication
+ *
+ * Copyright (c) 2025 Volodymyr Yepishev
+ *              All rights reserved.
+ *
+ * Licensed under GNU General Public License v3.0
+ * ============================================================================
+ */
+
 import { getBrowserAPI } from '../utils/browser-api-factory';
 
 const browserAPI = getBrowserAPI();
@@ -25,7 +37,7 @@ browserAPI.runtimeOnMessageAddListener(async (request, sender, sendResponse) => 
         }
         const isMatch = storedUrl === requestRepoUrl;
         console.log(
-          `CursIt-Extension: Comparing normalized '${storedUrl}' with '${requestRepoUrl}'. Match: ${isMatch}`
+          `CursIt-Extension: Comparing normalized '${storedUrl}' with '${requestRepoUrl}'. Match: ${isMatch}`,
         );
         return isMatch;
       });
@@ -60,7 +72,7 @@ browserAPI.runtimeOnMessageAddListener(async (request, sender, sendResponse) => 
             if (sender.tab?.id) {
               await browserAPI.showPageError(
                 sender.tab.id,
-                'Failed to send to Cursor. Is the server running?'
+                'Failed to send to Cursor. Is the server running?',
               );
             }
             throw new Error(errorMsg);
@@ -77,7 +89,7 @@ browserAPI.runtimeOnMessageAddListener(async (request, sender, sendResponse) => 
           if (sender.tab?.id) {
             await browserAPI.showPageError(
               sender.tab.id,
-              `Failed to send to Cursor: ${errorMessage}. Is the server running?`
+              `Failed to send to Cursor: ${errorMessage}. Is the server running?`,
             );
           }
         }
@@ -88,7 +100,7 @@ browserAPI.runtimeOnMessageAddListener(async (request, sender, sendResponse) => 
         if (sender.tab?.id) {
           await browserAPI.showPageError(
             sender.tab.id,
-            'Repository not configured. Click the extension icon to set it up.'
+            'Repository not configured. Click the extension icon to set it up.',
           );
         }
       }

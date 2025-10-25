@@ -1,10 +1,22 @@
+/* ============================================================================
+ * Project: CursIt - Cursor IDE Integration for GitHub & Azure DevOps
+ * File: browser-extension/src/extension-scripts/utils/page-notification.ts
+ * Purpose: Page notification utility - displays toast notifications in content scripts
+ *
+ * Copyright (c) 2025 Volodymyr Yepishev
+ *              All rights reserved.
+ *
+ * Licensed under GNU General Public License v3.0
+ * ============================================================================
+ */
+
 /**
  * Shows a notification directly on the page (for content scripts)
  * Creates an injected UI element that appears as a toast
  */
 export function showPageNotification(
   message: string,
-  type: 'error' | 'warning' | 'success' | 'info' = 'info'
+  type: 'error' | 'warning' | 'success' | 'info' = 'info',
 ) {
   // Remove any existing notifications
   const existingNotification = document.getElementById('cursit-notification');
