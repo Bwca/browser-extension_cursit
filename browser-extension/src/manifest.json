@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "CursIt Extension",
+  "description": "Browser extension that integrates GitHub/Azure DevOps PR comments with Cursor IDE",
+  "version": "0.1",
+  "icons": {
+    "32": "icons/32.png",
+    "128": "icons/128.png"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Open the popup",
+    "default_icon": {
+      "32": "icons/32.png",
+      "128": "icons/128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["http://localhost:5050/*"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://dev.azure.com/*/_pullrequest/*",
+        "https://dev.azure.com/*/_git/*/pullrequest/*",
+        "https://github.com/*/*/pull/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

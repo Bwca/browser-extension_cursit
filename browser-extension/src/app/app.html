@@ -1,0 +1,130 @@
+<div class="app-container">
+  <main class="content">
+    <section class="form-section">
+      <div class="form-group">
+        <label for="repoUrl">Repository URL</label>
+        <div class="input-wrapper">
+          <svg
+            class="input-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+              fill="currentColor"
+            />
+          </svg>
+          <input
+            id="repoUrl"
+            type="text"
+            class="input-field"
+            [(ngModel)]="newRepoUrl"
+            placeholder="https://github.com/my-org/my-repo"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="repoPath">Local Path</label>
+        <div class="input-wrapper">
+          <svg
+            class="input-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
+              fill="currentColor"
+            />
+          </svg>
+          <input
+            id="repoPath"
+            type="text"
+            class="input-field"
+            [(ngModel)]="newRepoPath"
+            placeholder="C:\Users\my-user\projects\my-repo"
+          />
+        </div>
+      </div>
+
+      <button
+        class="btn btn-primary"
+        (click)="addRepository()"
+        [disabled]="!newRepoUrl || !newRepoPath"
+      >
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor" />
+        </svg>
+        Add Repository
+      </button>
+    </section>
+
+    <section class="repo-section" *ngIf="repositories().length > 0">
+      <details open>
+        <summary class="section-header">
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 10l5 5 5-5z" fill="currentColor" />
+          </svg>
+          <span class="section-title">Configured Repositories</span>
+          <span class="badge">{{ repositories().length }}</span>
+        </summary>
+
+        <div class="repo-list">
+          <div class="repo-item" *ngFor="let repo of repositories()">
+            <div class="repo-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+            <div class="repo-info">
+              <div class="repo-url" [title]="repo.url">{{ repo.url }}</div>
+              <div class="repo-path" [title]="repo.path">
+                <svg
+                  class="path-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <span class="path-text">{{ repo.path }}</span>
+              </div>
+            </div>
+            <button
+              class="btn-icon btn-danger"
+              (click)="removeRepository(repo.url)"
+              title="Remove repository"
+            >
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <div class="empty-state" *ngIf="repositories().length === 0">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"
+          fill="currentColor"
+          opacity="0.3"
+        />
+      </svg>
+      <h3>No repositories configured</h3>
+      <p>Add your first repository mapping above</p>
+    </div>
+  </main>
+</div>
