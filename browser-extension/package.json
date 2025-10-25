@@ -7,8 +7,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build && tsup",
-    "test": "ng test"
+    "build": "ng build && tsup"
   },
   "prettier": {
     "printWidth": 100,
@@ -39,13 +38,6 @@
     "@angular/cli": "^20.3.4",
     "@angular/compiler-cli": "^20.3.0",
     "@types/firefox-webext-browser": "^143.0.0",
-    "@types/jasmine": "~5.1.0",
-    "jasmine-core": "~5.9.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
     "tsup": "^8.5.0",
     "typescript": "~5.9.2"
   }
