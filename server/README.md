@@ -1,10 +1,10 @@
 # CursIt HTTP Server (Python/Flask)
 
-A modular Flask-based HTTP server that integrates with Cursor IDE to open files and automatically paste PR comments into Cursor Chat.
+A sophisticated, modular Flask-based HTTP server infrastructure that orchestrates seamless integration with Cursor IDE, facilitating automated file operations and pull request commentary transfer to Cursor Chat.
 
-## Architecture
+## Architectural Framework
 
-The application follows Flask best practices with a clean, modular structure:
+The application adheres to Flask best practices, employing a pristine, modular architecture:
 
 ```
 server/
@@ -19,29 +19,29 @@ server/
 └── README.md
 ```
 
-## Installation
+## Installation Procedure
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Or install dependencies individually:
+Alternatively, install dependencies individually:
 
 ```bash
 pip install flask pyperclip pywin32 python-dotenv
 ```
 
-## Running
+## Server Initialization
 
 ```bash
 python run.py
 ```
 
-The server will start at `http://localhost:5050/open`
+The server daemon shall commence operations at `http://localhost:5050/open`
 
-## Behavior
+## Operational Behavior
 
-Accepts POST requests to `/open` with JSON payload:
+Accepts POST requests to `/open` endpoint with JSON payload specification:
 
 ```json
 {
@@ -53,39 +53,39 @@ Accepts POST requests to `/open` with JSON payload:
 }
 ```
 
-**Parameters:**
+**Parameter Specification:**
 
-- `filePath` (required): Full path to the file to open
-- `workspacePath` (optional but recommended): Full path to the workspace/repo root
-- `comment` (optional): Comment/question to send
-- `codeSnippet` (optional): Code snippet to include
-- `autoSubmit` (optional, default: `false`): If `true`, automatically submits the message by pressing Enter
+- `filePath` (required): Complete filesystem path to the designated file
+- `workspacePath` (discretionary, recommended): Complete path to workspace/repository root
+- `comment` (discretionary): Commentary or inquiry to transmit
+- `codeSnippet` (discretionary): Code fragment for inclusion
+- `autoSubmit` (discretionary, default: `false`): When `true`, autonomously submits message via Enter key
 
-**Actions performed:**
+**Execution Sequence:**
 
-1. Validates the file exists
-2. **Detects if Cursor is already running (cold start detection)**
-3. **Opens the workspace/repo in Cursor (if `workspacePath` provided), then opens the file**
-   - This ensures the file opens in the correct project context
-   - Prevents opening files in unrelated Cursor windows
-4. **If Cursor wasn't running:**
-   - Polls every 200ms for Cursor to start (up to 15s)
-   - Polls every 200ms for Cursor to become responsive (up to 8s)
-   - Uses consecutive successful checks to confirm readiness
-5. **If Cursor was already running:** Proceeds immediately to file loading
-6. Combines comment + code snippet into a message
-7. Saves the message to temp file: `%TEMP%/cursor_received_message.txt`
-8. Copies the message to clipboard
-9. **Polls window titles every 100ms** to detect when file is loaded (8-15s timeout)
-10. Waits 0.3s for UI to settle (much faster than old flat waits)
-11. **Finds and focuses the Cursor window with that specific file**
-12. **Opens Cursor Chat (ESC + Ctrl+L)**
-13. **Automatically pastes the message into the chat input (Ctrl+V)**
-14. If `autoSubmit=true`: **Automatically presses Enter to submit**
-15. If `autoSubmit=false` (default): User can review and press Enter manually
-16. Returns JSON response
+1. Validates file existence within filesystem
+2. **Detects Cursor operational status (cold start intelligence)**
+3. **Materializes workspace/repository within Cursor (if `workspacePath` provided), subsequently opening designated file**
+   - Ensures file materialization within appropriate project context
+   - Prevents file opening within unrelated Cursor instances
+4. **Cold start scenario:**
+   - Polls at 200ms intervals for Cursor initialization (maximum 15s)
+   - Polls at 200ms intervals for Cursor responsiveness (maximum 8s)
+   - Employs consecutive verification checks to confirm readiness
+5. **Hot start scenario:** Proceeds immediately to file loading operations
+6. Synthesizes commentary and code snippet into unified message
+7. Persists message to temporary file: `%TEMP%/cursor_received_message.txt`
+8. Transfers message to system clipboard
+9. **Polls window titles at 100ms intervals** to detect file loading completion (8-15s timeout)
+10. Observes 0.3s interval for UI stabilization
+11. **Identifies and focuses Cursor window containing designated file**
+12. **Activates Cursor Chat interface (ESC + Ctrl+L)**
+13. **Automatically populates chat input with message content (Ctrl+V)**
+14. Autonomous mode (`autoSubmit=true`): **Automatically submits via Enter key**
+15. Curator mode (`autoSubmit=false`, default): User reviews prior to manual submission
+16. Returns JSON response payload
 
-**Response format:**
+**Response Format Specification:**
 
 ```json
 {
@@ -98,37 +98,37 @@ Accepts POST requests to `/open` with JSON payload:
 }
 ```
 
-If `autoSubmit=true`, the note will say: `"...pasted and submitted."`
+Autonomous mode note displays: `"...pasted and submitted."`
 
-## Key Features
+## Distinguished Capabilities
 
-### Architecture
+### Architectural Excellence
 
-- ✅ **Modular Design** - Clean separation of concerns following Flask best practices
-- ✅ **Application Factory Pattern** - Easy testing and configuration management
-- ✅ **Service Layer** - Business logic separated from routes
-- ✅ **Configuration Management** - Environment-based configuration
+- ✅ **Modular Architecture** - Pristine separation of concerns adhering to Flask best practices
+- ✅ **Application Factory Pattern** - Facilitates testing and configuration orchestration
+- ✅ **Service Layer Abstraction** - Business logic architecturally separated from routing infrastructure
+- ✅ **Configuration Orchestration** - Environment-based configuration management
 
-### Functionality
+### Operational Sophistication
 
-- ✅ **Cold Start Detection** - Detects if Cursor needs to be launched and waits appropriately
-- ✅ **Intelligent Polling** - No blind waits! Polls every 100-200ms to check actual status:
-  - Cursor startup detection
-  - Window responsiveness verification
+- ✅ **Cold Start Intelligence** - Autonomously detects Cursor launch requirements and accommodates appropriately
+- ✅ **Adaptive Polling Mechanism** - Eliminates presumptive delays through 100-200ms interval status verification:
+  - Cursor initialization detection
+  - Window responsiveness authentication
   - File loading confirmation
-- ✅ **Consecutive Check Validation** - Requires 3 consecutive successful checks to confirm Cursor is ready
-- ✅ **Minimal Delays** - Only 0.3s UI settle time after file loads
-- ✅ **Fast Hot Starts** - When Cursor is already running, proceeds immediately to file loading
-- ✅ **Workspace-Aware** - Opens workspace/repo first, then the file (ensures correct project context)
-- ✅ **Intelligent Window Focusing** - Matches by filename to find the correct Cursor window
-- ✅ **Automatic Chat Opening** - Opens Cursor Chat with ESC + Ctrl+L
-- ✅ **Automatic Pasting** - No manual paste needed
-- ✅ **Optional Auto-Submit** - Can automatically submit the message with Enter
-- ✅ **Detailed Logging** - Logs to console and `%TEMP%/cursor_listener.log` with timing information
+- ✅ **Consecutive Verification Protocol** - Requires three consecutive successful checks for Cursor readiness confirmation
+- ✅ **Optimized Latency** - Employs only 0.3s UI stabilization interval post-loading
+- ✅ **Expedited Hot Starts** - Immediate file loading progression when Cursor is operational
+- ✅ **Context-Preserving Operations** - Initializes workspace/repository prior to file materialization (ensures contextual integrity)
+- ✅ **Intelligent Window Identification** - Filename-based matching for precise Cursor window location
+- ✅ **Automated Chat Activation** - Programmatic Cursor Chat opening via ESC + Ctrl+L
+- ✅ **Automated Content Population** - Eliminates manual paste requirements
+- ✅ **Configurable Submission Behavior** - Discretionary automatic message submission capability
+- ✅ **Comprehensive Instrumentation** - Console and `%TEMP%/cursor_listener.log` logging with temporal analytics
 
-## Configuration
+## Configuration Protocol
 
-You can customize server behavior using environment variables. Create a `.env` file in the `server` directory:
+Server behavior may be customized through environment variables. Establish a `.env` configuration file within the `server` directory:
 
 ```ini
 # Server settings
@@ -145,51 +145,51 @@ FILE_LOAD_TIMEOUT_HOT=8.0
 FILE_LOAD_TIMEOUT_COLD=15.0
 ```
 
-## Module Structure
+## Modular Architecture
 
-- **`app/__init__.py`** - Application factory for Flask
-- **`app/config.py`** - Centralized configuration with environment variable support
-- **`app/routes/open_routes.py`** - API endpoint definitions
-- **`app/services/cursor_service.py`** - Cursor IDE operations (open files, keyboard automation)
-- **`app/services/window_service.py`** - Window management and polling
-- **`app/services/clipboard_service.py`** - Clipboard operations
-- **`app/services/message_service.py`** - Message handling and temp file operations
-- **`app/utils/logger.py`** - Logging configuration
+- **`app/__init__.py`** - Flask application factory
+- **`app/config.py`** - Centralized configuration with environment variable integration
+- **`app/routes/open_routes.py`** - API endpoint specifications
+- **`app/services/cursor_service.py`** - Cursor IDE orchestration (file operations, keyboard automation)
+- **`app/services/window_service.py`** - Window management and polling infrastructure
+- **`app/services/clipboard_service.py`** - Clipboard operation services
+- **`app/services/message_service.py`** - Message handling and temporary file operations
+- **`app/utils/logger.py`** - Logging infrastructure configuration
 
-## Dependencies
+## Dependency Framework
 
-- **flask** - Web framework
-- **pyperclip** - Clipboard operations
-- **pywin32** - Windows API access (window focusing and keyboard automation)
-- **python-dotenv** - Environment variable management
+- **flask** - Enterprise web framework
+- **pyperclip** - Clipboard manipulation library
+- **pywin32** - Windows API integration (window focus management and keyboard automation)
+- **python-dotenv** - Environment variable orchestration
 
-## Troubleshooting
+## Diagnostic Resolution
 
-**Issue:** File opens but message doesn't paste
+**Issue:** File Materialization Without Message Transfer
 
-- **Cause:** Cursor wasn't fully loaded when paste was attempted
-- **Solution:** The server now uses intelligent polling instead of flat waits:
-  - Polls for Cursor startup (up to 15s)
-  - Polls for window responsiveness (up to 8s with 3 consecutive checks)
-  - Polls for file loading (up to 8-15s depending on cold/hot start)
-  - Only uses minimal 0.3s UI settle time after confirmation
+- **Etiology:** Cursor IDE initialization incomplete during paste operation
+- **Resolution:** Server employs intelligent polling mechanisms rather than presumptive delays:
+  - Cursor initialization polling (maximum 15s)
+  - Window responsiveness polling (maximum 8s with 3 consecutive verification checks)
+  - File loading polling (8-15s contingent upon cold/hot start scenario)
+  - Minimal 0.3s UI stabilization interval post-confirmation
 
-**Issue:** Still having paste issues
+**Issue:** Persistent Message Transfer Difficulties
 
-- **Check logs:** View `%TEMP%/cursor_listener.log` for detailed timing information
-- **Look for:**
-  - "Cursor started! (took X.Xs)" - How long startup took
-  - "Cursor is responsive! (took X.Xs)" - How long until responsive
-  - "File loaded! (took X.Xs)" - How long file loading took
-- **Adjust if needed:** Increase `required_consecutive` in `wait_for_cursor_ready()` for stricter checks
+- **Diagnostic Procedure:** Consult `%TEMP%/cursor_listener.log` for comprehensive temporal analytics
+- **Key Indicators:**
+  - "Cursor started! (took X.Xs)" - Initialization duration
+  - "Cursor is responsive! (took X.Xs)" - Responsiveness acquisition timeline
+  - "File loaded! (took X.Xs)" - File loading completion duration
+- **Remediation:** Increment `required_consecutive` parameter within `wait_for_cursor_ready()` for enhanced verification rigor
 
-**Issue:** Cursor window not found
+**Issue:** Cursor Window Detection Failure
 
-- **Solution:** Ensure Cursor is in your PATH or update `CURSOR_EXECUTABLE_NAME` in the code
+- **Resolution:** Verify Cursor executable accessibility via system PATH, or update `CURSOR_EXECUTABLE_NAME` parameter
 
-**Issue:** Process feels slow on cold starts
+**Issue:** Cold Start Latency Perception
 
-- **This is normal!** Cold starts can take 5-10 seconds, but the server now:
-  - Reports exact timing in logs
-  - Only waits as long as needed (no extra padding)
-  - Proceeds immediately on hot starts (when Cursor is already running)
+- **Explanation:** Cold start operations naturally require 5-10 seconds. The server architecture now:
+  - Reports precise temporal metrics within logs
+  - Observes only requisite waiting intervals (eliminates superfluous padding)
+  - Proceeds immediately during hot start scenarios (when Cursor is operational)

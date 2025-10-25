@@ -1,69 +1,70 @@
-# CursItChromeExtension
+# CursIt Browser Extension
 
-Browser extension that integrates GitHub/Azure DevOps PR comments with Cursor IDE.
+A sophisticated browser extension facilitating seamless integration between GitHub/Azure DevOps pull request commentary and Cursor IDE.
 
-## Features
+## Distinguished Capabilities
 
-### Two Button Types:
+### Dual-Mode Interface Architecture:
 
-1. **Take to Cursor** (Blue button)
-   - Always visible on all PR comments
-   - Opens the file in Cursor
-   - Pastes the full comment + code snippets into chat
-   - **Manual submission** - you review and press Enter
+1. **Curator Mode** (Azure Button)
 
-2. **Execute in Cursor** (Green button)
-   - Only appears when comment summary contains "Prompt for AI Agents"
-   - Opens the file in Cursor
-   - Extracts only the adjacent code block (not the file path or full comment)
-   - Pastes concise command into chat
-   - **Auto-submits immediately** - executes right away
+   - Perpetually accessible across all pull request commentary
+   - Materializes the designated file within Cursor IDE
+   - Transfers comprehensive comment text and code fragments to chat interface
+   - **Deliberate submission protocol** - Manual review and confirmation required
 
-### Supported Platforms:
+2. **Autonomous Execution Mode** (Verdant Button)
+   - Manifests exclusively when commentary contains "Prompt for AI Agents" designation
+   - Materializes the designated file within Cursor IDE
+   - Extracts exclusively the adjacent code block, excluding file path references
+   - Populates chat with concise directive
+   - **Immediate automatic submission** - Executes without intermediary review
 
-- GitHub Pull Requests
-- Azure DevOps Pull Requests
+### Platform Compatibility:
 
-## Setup
+- GitHub Pull Request Infrastructure
+- Azure DevOps Pull Request Ecosystem
 
-1. Configure repository mappings in the extension popup
-2. Map repo URLs to local file paths
-3. Ensure the Python server is running at `http://localhost:5050`
+## Configuration Protocol
 
-## Development server
+1. Establish repository mappings via the extension interface
+2. Configure correspondence between repository URLs and local filesystem hierarchies
+3. Verify Python server daemon operation at `http://localhost:5050`
 
-To start a local development server, run:
+## Development Infrastructure
+
+To initialize the local development server, execute:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Upon successful initialization, navigate to `http://localhost:4200/` within your browser. The application incorporates automatic reload capabilities upon source file modifications.
 
-## Code scaffolding
+## Code Generation
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Angular CLI provides comprehensive scaffolding capabilities. To generate a component architecture, execute:
 
 ```bash
 ng generate component component-name
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+For a complete enumeration of available schematics (components, directives, pipes, et cetera), consult:
 
 ```bash
 ng generate --help
 ```
 
-## Building
+## Production Compilation
 
-To build the project run:
+To compile the project for production deployment:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+This operation compiles your project and deposits build artifacts within the `dist/` directory. The production build configuration automatically optimizes for performance and operational efficiency.
 
-## Additional Resources
+## Supplementary Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+For comprehensive information regarding Angular CLI utilization, including detailed command references, consult the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) documentation.
