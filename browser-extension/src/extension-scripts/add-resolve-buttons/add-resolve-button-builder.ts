@@ -29,7 +29,7 @@ export class AddResolveButtonBuilder {
     this.codeSnippetSelector = '';
     this.filePathSelector = '';
     this.buttonClass = 'resolve-in-cursor-btn';
-    this.buttonText = 'Take to Cursor';
+    this.buttonText = 'Take comment to Cursor';
   }
 
   setCommentThreadSelector(selector: string) {

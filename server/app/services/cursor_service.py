@@ -119,6 +119,78 @@ class CursorService:
                 return False, f"Failed to open file: {e2}"
     
     @staticmethod
+    def bring_window_to_front(
+        target_filename: Optional[str] = None
+    ) -> Tuple[bool, str]:
+        """
+        Bring Cursor window to front WITHOUT any pasting operations.
+        
+        Args:
+            target_filename: Optional filename to find specific window
+            
+        Returns:
+            Tuple[bool, str]: (success, error_message)
+        """
+        if win32gui is None or win32api is None:
+            logger.warning("pywin32 not installed, cannot focus window")
+            return False, "pywin32 not installed"
+        
+        try:
+            window = WindowService.find_cursor_window(target_filename)
+            if window is None:
+                window = WindowService.find_cursor_window(None)
+                if window is None:
+                    return False, "No window with 'Cursor' in title found"
+            
+            hwnd, title = window
+            logger.info(f"Focusing window: {title}")
+            
+            # Bring window to front - multiple methods
+            try:
+                # Method 1: Standard approach
+                win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
+                time.sleep(0.05)
+                win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
+                time.sleep(0.05)
+            except Exception as e:
+                logger.warning(f"ShowWindow failed: {e}")
+            
+            # Method 2: Try SetForegroundWindow with thread attachment
+            try:
+                # Get foreground thread
+                foreground_hwnd = win32gui.GetForegroundWindow()
+                foreground_thread = win32process.GetWindowThreadProcessId(foreground_hwnd)[0]
+                current_thread = win32api.GetCurrentThreadId()
+                
+                # Attach to foreground thread
+                if foreground_thread != current_thread:
+                    win32process.AttachThreadInput(foreground_thread, current_thread, True)
+                
+                # Try to set foreground
+                win32gui.SetForegroundWindow(hwnd)
+                
+                # Detach
+                if foreground_thread != current_thread:
+                    win32process.AttachThreadInput(foreground_thread, current_thread, False)
+                    
+                logger.info("✓ Window brought to foreground")
+            except Exception as e:
+                logger.warning(f"SetForegroundWindow failed, trying fallback: {e}")
+                # Fallback: BringWindowToTop
+                try:
+                    win32gui.BringWindowToTop(hwnd)
+                    win32gui.SetActiveWindow(hwnd)
+                except:
+                    pass
+            
+            logger.info(f"✓ Window focused: {title}")
+            return True, ""
+            
+        except Exception as e:
+            logger.error(f"Error bringing window to front: {e}", exc_info=True)
+            return False, str(e)
+    
+    @staticmethod
     def bring_window_to_front_and_paste(
         target_filename: Optional[str] = None,
         auto_submit: bool = False

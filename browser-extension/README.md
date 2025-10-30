@@ -15,7 +15,7 @@ A sophisticated browser extension facilitating seamless integration between GitH
    - **Clean operation** - No side effects, no message pasting, just file navigation
    - Ideal for quick file browsing and context switching
 
-2. **Curator Mode** (Azure Button)
+2. **Curator Mode** ("Take comment to Cursor" Button)
 
    - Perpetually accessible across all pull request commentary
    - Materializes the designated file within Cursor IDE

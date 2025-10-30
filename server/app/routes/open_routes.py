@@ -74,6 +74,40 @@ def open_file_only():
     if not opened:
         return jsonify({"error": "Failed to open file", "detail": open_msg}), 500
     
+    # Check if Cursor was already running (cold start detection)
+    cursor_was_running = WindowService.is_cursor_running()
+    logger.info(f"Cursor was {'already running' if cursor_was_running else 'NOT running (cold start)'}")
+    
+    # If Cursor wasn't running, wait for it to start up and become responsive
+    if not cursor_was_running:
+        cursor_started = WindowService.wait_for_cursor_startup()
+        if cursor_started:
+            cursor_ready = WindowService.wait_for_cursor_ready()
+            if not cursor_ready:
+                logger.warning("Cursor responsiveness timeout, proceeding anyway...")
+                time.sleep(Config.FALLBACK_DELAY)
+        else:
+            logger.warning("Cursor startup timeout, proceeding anyway...")
+            time.sleep(1.0)
+    
+    # Wait for Cursor to open the file
+    logger.info("Waiting for Cursor to open the file...")
+    file_timeout = Config.FILE_LOAD_TIMEOUT_COLD if not cursor_was_running else Config.FILE_LOAD_TIMEOUT_HOT
+    if workspace_path:
+        file_timeout = max(file_timeout, 12.0)  # Longer timeout for workspace
+    
+    file_loaded = WindowService.wait_for_file_loaded(file_path, timeout=file_timeout)
+    
+    if not file_loaded:
+        logger.warning("File load timeout, proceeding anyway...")
+        time.sleep(0.5)
+    
+    # Bring window to front (without pasting)
+    success, msg = CursorService.bring_window_to_front(target_filename=file_path)
+    
+    if not success:
+        logger.error(f"Could not bring window to front: {msg}")
+    
     # Build response
     response = {
         "status": "ok",

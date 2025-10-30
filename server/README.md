@@ -125,12 +125,16 @@ Accepts POST requests with JSON payload specification:
 **Execution Sequence:**
 
 1. Validates file existence within filesystem
-2. Opens workspace/repository in Cursor (if `workspacePath` provided)
-3. Opens the designated file
-4. **No clipboard operations**
-5. **No chat activation**
-6. **No paste operations**
-7. Returns JSON response payload
+2. **Detects Cursor operational status (cold start intelligence)**
+3. Opens workspace/repository in Cursor (if `workspacePath` provided)
+4. Opens the designated file
+5. **Cold start scenario:** Polls for Cursor initialization and responsiveness
+6. **Polls window titles** to detect file loading completion
+7. **Brings Cursor window to foreground** (focuses the window)
+8. **No clipboard operations**
+9. **No chat activation**
+10. **No paste operations**
+11. Returns JSON response payload
 
 **Response Format Specification:**
 
