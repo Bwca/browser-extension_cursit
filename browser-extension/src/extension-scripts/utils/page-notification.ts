@@ -16,7 +16,7 @@
  */
 export function showPageNotification(
   message: string,
-  type: 'error' | 'warning' | 'success' | 'info' = 'info',
+  type: 'error' | 'warning' | 'success' | 'info' = 'info'
 ) {
   // Remove any existing notifications
   const existingNotification = document.getElementById('cursit-notification');
@@ -89,10 +89,10 @@ export function showPageNotification(
   // Close button handler
   const closeBtn = document.getElementById('cursit-notification-close');
   if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
+    closeBtn.onclick = () => {
       notification.style.animation = 'slideIn 0.3s ease-out reverse';
       setTimeout(() => notification.remove(), 300);
-    });
+    };
   }
 
   // Auto-remove after 5 seconds

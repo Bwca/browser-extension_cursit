@@ -33,7 +33,7 @@ export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder 
       while (currentElement && attempts < maxAttempts) {
         // Look for the file path span in the current level and all descendants
         const filePathSpan = currentElement.querySelector(
-          'span.body-s.secondary-text.text-ellipsis',
+          'span.body-s.secondary-text.text-ellipsis'
         );
         if (filePathSpan) {
           const filePath = filePathSpan.textContent?.trim();
@@ -49,7 +49,7 @@ export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder 
         const fileHeader = currentElement.querySelector('.comment-file-header');
         if (fileHeader) {
           const filePathSpan2 = fileHeader.querySelector(
-            'span.body-s.secondary-text.text-ellipsis, span.body-s.secondary-text',
+            'span.body-s.secondary-text.text-ellipsis, span.body-s.secondary-text'
           );
           if (filePathSpan2) {
             const filePath = filePathSpan2.textContent?.trim();
@@ -120,7 +120,7 @@ export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder 
     if (commentViewer) {
       const fileInfoElements = commentViewer.querySelectorAll('[data-file-path], [title*="/"]');
       console.log(
-        `CursIt-Extension: Searching ${fileInfoElements.length} elements with data-file-path or title attributes`,
+        `CursIt-Extension: Searching ${fileInfoElements.length} elements with data-file-path or title attributes`
       );
       for (const element of fileInfoElements) {
         const filePath = element.getAttribute('data-file-path') || element.getAttribute('title');
@@ -154,7 +154,7 @@ export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder 
 
     if (codeSnippets.length > 0) {
       console.log(
-        `CursIt-Extension: Extracted ${codeSnippets.length} code snippet(s) from Azure DevOps comment.`,
+        `CursIt-Extension: Extracted ${codeSnippets.length} code snippet(s) from Azure DevOps comment.`
       );
       return codeSnippets.join('\n\n---\n\n');
     }
@@ -174,5 +174,117 @@ export class AzureDevOpsAddResolveButtonBuilder extends AddResolveButtonBuilder 
       .join('/')}`;
     console.log('CursIt-Extension: Azure DevOps repo URL:', repoUrl);
     return repoUrl;
+  }
+
+  override addOpenInCursorButton() {
+    // Strategy 1: Add buttons to file headers in the file diff sections
+    const fileHeaders = document.querySelectorAll('.comment-file-header');
+    console.log(`CursIt-Extension: Found ${fileHeaders.length} file headers in Azure DevOps`);
+
+    fileHeaders.forEach((fileHeader, index) => {
+      // Check if button already exists
+      const existingButton = fileHeader.querySelector('.open-in-cursor-btn');
+      if (existingButton) {
+        return;
+      }
+
+      // Get file path from the file header
+      const filePathSpan = fileHeader.querySelector(
+        'span.body-s.secondary-text.text-ellipsis, span.body-s.secondary-text'
+      );
+      if (!filePathSpan) {
+        console.log(`CursIt-Extension: File header ${index} - No file path element found`);
+        return;
+      }
+
+      const filePath = filePathSpan.textContent?.trim();
+      if (!filePath) {
+        console.log(`CursIt-Extension: File header ${index} - Empty file path`);
+        return;
+      }
+
+      // Create "Open in Cursor" button
+      const button = document.createElement('button');
+      button.textContent = 'Open in Cursor';
+      button.className = 'open-in-cursor-btn';
+      button.style.cssText =
+        'margin-left: 12px; padding: 4px 12px; background: #8b5cf6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;';
+
+      button.onclick = () => {
+        const repoUrl = this.getRepoUrl();
+
+        const data = {
+          type: 'resolveComment' as const,
+          comment: '', // No comment text for direct file open
+          codeSnippet: '', // No code snippet
+          filePath: filePath,
+          repoUrl: repoUrl,
+          autoSubmit: true, // Auto-submit to just open the file
+        };
+
+        console.log('Sending data from content script (Open in Cursor):');
+        console.log(JSON.stringify(data, null, 2));
+
+        this.browserAPI.runtimeSendMessage(data);
+      };
+
+      // Append button to the file header
+      fileHeader.appendChild(button);
+      console.log(`CursIt-Extension: File header ${index} - Open in Cursor button added!`);
+    });
+
+    // Strategy 2: Add buttons to standalone file path displays (if any exist outside comment threads)
+    const filePathElements = document.querySelectorAll(
+      'span.body-s.secondary-text.text-ellipsis:not(.open-in-cursor-processed)'
+    );
+    console.log(`CursIt-Extension: Found ${filePathElements.length} potential file path elements`);
+
+    filePathElements.forEach((element, index) => {
+      const filePath = element.textContent?.trim();
+      if (!filePath) {
+        return;
+      }
+
+      // Mark as processed
+      element.classList.add('open-in-cursor-processed');
+
+      // Check if button already exists
+      const parent = element.parentElement;
+      if (!parent) return;
+
+      const existingButton = parent.querySelector('.open-in-cursor-btn-inline');
+      if (existingButton) {
+        return;
+      }
+
+      // Create inline button with full text
+      const button = document.createElement('button');
+      button.textContent = 'Open in Cursor';
+      button.className = 'open-in-cursor-btn-inline';
+      button.style.cssText =
+        'margin-left: 8px; padding: 4px 8px; background: #8b5cf6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 500; vertical-align: middle;';
+
+      button.onclick = (e) => {
+        e.stopPropagation();
+        const repoUrl = this.getRepoUrl();
+
+        const data = {
+          type: 'resolveComment' as const,
+          comment: '',
+          codeSnippet: '',
+          filePath: filePath,
+          repoUrl: repoUrl,
+          autoSubmit: true,
+        };
+
+        console.log('Sending data from content script (Open in Cursor - inline):');
+        console.log(JSON.stringify(data, null, 2));
+
+        this.browserAPI.runtimeSendMessage(data);
+      };
+
+      element.after(button);
+      console.log(`CursIt-Extension: File path element ${index} - Open in Cursor button added!`);
+    });
   }
 }

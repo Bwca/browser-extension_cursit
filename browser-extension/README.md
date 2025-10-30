@@ -4,16 +4,25 @@ A sophisticated browser extension facilitating seamless integration between GitH
 
 ## Distinguished Capabilities
 
-### Dual-Mode Interface Architecture:
+### Tri-Mode Interface Architecture:
 
-1. **Curator Mode** (Azure Button)
+1. **Direct File Access** (Purple "Open in Cursor" Button)
+
+   - Positioned adjacent to file path displays throughout the pull request interface
+   - **GitHub:** Appears in file headers (Files Changed tab) and inline with file links (Conversation tab)
+   - **Azure DevOps:** Appears in comment file headers and alongside file path elements
+   - Opens file directly in Cursor IDE without any chat or clipboard operations
+   - **Clean operation** - No side effects, no message pasting, just file navigation
+   - Ideal for quick file browsing and context switching
+
+2. **Curator Mode** (Azure Button)
 
    - Perpetually accessible across all pull request commentary
    - Materializes the designated file within Cursor IDE
    - Transfers comprehensive comment text and code fragments to chat interface
    - **Deliberate submission protocol** - Manual review and confirmation required
 
-2. **Autonomous Execution Mode** (Verdant Button)
+3. **Autonomous Execution Mode** (Verdant Button)
    - Manifests exclusively when commentary contains "Prompt for AI Agents" designation
    - Materializes the designated file within Cursor IDE
    - Extracts exclusively the adjacent code block, excluding file path references

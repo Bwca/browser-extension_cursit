@@ -26,6 +26,67 @@ from app.services.cursor_service import CursorService
 logger = get_logger(__name__)
 
 
+@open_bp.route("/open-file", methods=["POST"])
+def open_file_only():
+    """
+    Open a file in Cursor WITHOUT pasting anything to chat.
+    
+    Expected JSON payload:
+    {
+        "filePath": "path/to/file.py",
+        "workspacePath": "path/to/workspace" (optional)
+    }
+    
+    Returns:
+        JSON response with status and details
+    """
+    # Parse request
+    try:
+        data = request.get_json(force=True)
+    except Exception:
+        return jsonify({"error": "Invalid JSON"}), 400
+    
+    # Extract parameters (support both camelCase and snake_case)
+    file_path = data.get("filePath") or data.get("file_path")
+    workspace_path = data.get("workspacePath") or data.get("workspace_path") or data.get("repoPath") or data.get("repo_path")
+    
+    # Log request
+    logger.info("=" * 60)
+    logger.info("Received POST /open-file request")
+    logger.info(f"workspacePath: {workspace_path}")
+    logger.info(f"filePath: {file_path}")
+    
+    # Validate file path
+    if not file_path:
+        logger.error("Missing filePath")
+        return jsonify({"error": "Missing 'filePath'"}), 400
+    
+    # Normalize and validate file path
+    file_path = os.path.expanduser(file_path)
+    file_path = os.path.abspath(file_path)
+    
+    if not os.path.exists(file_path):
+        logger.error(f"File does not exist: {file_path}")
+        return jsonify({"error": "File does not exist", "filePath": file_path}), 400
+    
+    # Open workspace and file in Cursor (without any pasting)
+    opened, open_msg = CursorService.open_file_only(workspace_path, file_path)
+    if not opened:
+        return jsonify({"error": "Failed to open file", "detail": open_msg}), 500
+    
+    # Build response
+    response = {
+        "status": "ok",
+        "openedWorkspace": workspace_path,
+        "openedFile": file_path,
+        "note": "File opened in Cursor"
+    }
+    
+    logger.info(f"✓ File opened successfully")
+    logger.info("=" * 60)
+    return jsonify(response), 200
+
+
 @open_bp.route("/open", methods=["POST"])
 def open_file():
     """

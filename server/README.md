@@ -39,9 +39,13 @@ python run.py
 
 The server daemon shall commence operations at `http://localhost:5050/open`
 
-## Operational Behavior
+## API Endpoints
 
-Accepts POST requests to `/open` endpoint with JSON payload specification:
+### POST `/open` - Open File with Comment/Chat Integration
+
+Opens a file in Cursor IDE and pastes comment/code into the chat interface.
+
+Accepts POST requests with JSON payload specification:
 
 ```json
 {
@@ -99,6 +103,52 @@ Accepts POST requests to `/open` endpoint with JSON payload specification:
 ```
 
 Autonomous mode note displays: `"...pasted and submitted."`
+
+### POST `/open-file` - Simple File Opening
+
+Opens a file in Cursor IDE WITHOUT any clipboard, chat, or paste operations. This is a clean file opening operation with no side effects.
+
+Accepts POST requests with JSON payload specification:
+
+```json
+{
+  "workspacePath": "C:\\path\\to\\workspace",
+  "filePath": "C:\\path\\to\\workspace\\file.py"
+}
+```
+
+**Parameter Specification:**
+
+- `filePath` (required): Complete filesystem path to the designated file
+- `workspacePath` (discretionary, recommended): Complete path to workspace/repository root
+
+**Execution Sequence:**
+
+1. Validates file existence within filesystem
+2. Opens workspace/repository in Cursor (if `workspacePath` provided)
+3. Opens the designated file
+4. **No clipboard operations**
+5. **No chat activation**
+6. **No paste operations**
+7. Returns JSON response payload
+
+**Response Format Specification:**
+
+```json
+{
+  "status": "ok",
+  "openedWorkspace": "C:\\full\\path\\to\\workspace",
+  "openedFile": "C:\\full\\path\\to\\workspace\\file.py",
+  "note": "File opened in Cursor"
+}
+```
+
+**Use Cases:**
+
+- Quick file navigation from pull request file headers
+- Opening files without comment context
+- Direct file access buttons in browser extensions
+- Any scenario where clipboard/chat operations are undesired
 
 ## Distinguished Capabilities
 

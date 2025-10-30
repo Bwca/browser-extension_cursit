@@ -47,7 +47,7 @@ export class GitHubAddResolveButtonBuilder extends AddResolveButtonBuilder {
 
       // Strategy 3: Look for hidden input field in suggestion forms.
       const suggestionForm = reviewThreadComponent.querySelector(
-        'form.js-single-suggested-change-form',
+        'form.js-single-suggested-change-form'
       );
       if (suggestionForm) {
         const pathInput = suggestionForm.querySelector('input[name="path"]');
@@ -77,5 +77,121 @@ export class GitHubAddResolveButtonBuilder extends AddResolveButtonBuilder {
       .join('/')}`;
     console.log('CursIt-Extension: GitHub repo URL:', repoUrl);
     return repoUrl;
+  }
+
+  override addOpenInCursorButton() {
+    // Strategy 1: Add buttons to file headers in "Files changed" tab
+    const fileHeaders = document.querySelectorAll('.file-header');
+    console.log(`CursIt-Extension: Found ${fileHeaders.length} file headers in GitHub`);
+
+    fileHeaders.forEach((fileHeader, index) => {
+      // Check if button already exists
+      const existingButton = fileHeader.querySelector('.open-in-cursor-btn');
+      if (existingButton) {
+        return;
+      }
+
+      // Get file path
+      const filePathElement = fileHeader.querySelector('a[title]');
+      if (!filePathElement) {
+        console.log(`CursIt-Extension: File header ${index} - No file path element found`);
+        return;
+      }
+
+      const filePath = (filePathElement as HTMLAnchorElement).title;
+
+      // Create "Open in Cursor" button
+      const button = document.createElement('button');
+      button.textContent = 'Open in Cursor';
+      button.className = 'open-in-cursor-btn';
+      button.style.cssText =
+        'margin-left: 8px; padding: 4px 12px; background: #8b5cf6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500;';
+
+      button.onclick = () => {
+        const repoUrl = this.getRepoUrl();
+
+        const data = {
+          type: 'resolveComment' as const,
+          comment: '', // No comment text for direct file open
+          codeSnippet: '', // No code snippet
+          filePath: filePath,
+          repoUrl: repoUrl,
+          autoSubmit: true, // Auto-submit to just open the file
+        };
+
+        console.log('Sending data from content script (Open in Cursor):');
+        console.log(JSON.stringify(data, null, 2));
+
+        this.browserAPI.runtimeSendMessage(data);
+      };
+
+      // Find the file info section (where the file name is displayed)
+      const fileInfo = fileHeader.querySelector('.file-info');
+      if (fileInfo) {
+        fileInfo.appendChild(button);
+        console.log(`CursIt-Extension: File header ${index} - Open in Cursor button added!`);
+      } else {
+        // Fallback: append to file header itself
+        fileHeader.appendChild(button);
+        console.log(
+          `CursIt-Extension: File header ${index} - Open in Cursor button added (fallback)!`
+        );
+      }
+    });
+
+    // Strategy 2: Add buttons to conversation tab file links
+    const conversationFileLinks = document.querySelectorAll(
+      '.review-thread-component summary a.Link--primary'
+    );
+    console.log(
+      `CursIt-Extension: Found ${conversationFileLinks.length} file links in conversation tab`
+    );
+
+    conversationFileLinks.forEach((linkElement, index) => {
+      const link = linkElement as HTMLAnchorElement;
+      if (!link.href.includes('/files')) {
+        return;
+      }
+
+      // Check if button already exists
+      const parent = link.parentElement;
+      if (!parent) return;
+
+      const existingButton = parent.querySelector('.open-in-cursor-btn-inline');
+      if (existingButton) {
+        return;
+      }
+
+      const filePath = link.textContent?.trim();
+
+      // Create inline button with full text
+      const button = document.createElement('button');
+      button.textContent = 'Open in Cursor';
+      button.className = 'open-in-cursor-btn-inline';
+      button.style.cssText =
+        'margin-left: 8px; padding: 4px 8px; background: #8b5cf6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 500; vertical-align: middle;';
+
+      button.onclick = (e) => {
+        e.stopPropagation(); // Prevent summary toggle
+        const repoUrl = this.getRepoUrl();
+
+        const data = {
+          type: 'resolveComment' as const,
+          comment: '',
+          codeSnippet: '',
+          filePath: filePath,
+          repoUrl: repoUrl,
+          autoSubmit: true,
+        };
+
+        console.log('Sending data from content script (Open in Cursor - inline):');
+        console.log(JSON.stringify(data, null, 2));
+
+        this.browserAPI.runtimeSendMessage(data);
+      };
+
+      link.after(button);
+      console.log(`CursIt-Extension: Conversation link ${index} - Open in Cursor button added!`);
+    });
   }
 }

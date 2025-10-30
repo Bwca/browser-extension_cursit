@@ -38,6 +38,47 @@ class CursorService:
     """Service for Cursor IDE operations."""
     
     @staticmethod
+    def open_file_only(workspace_path: Optional[str], file_path: str) -> Tuple[bool, str]:
+        """
+        Open a file in Cursor WITHOUT any clipboard or chat operations.
+        This is a simple file opening operation with no side effects.
+        
+        Args:
+            workspace_path: Path to the workspace/repo root (optional)
+            file_path: Path to the file to open
+            
+        Returns:
+            Tuple[bool, str]: (success, note_or_error)
+        """
+        try:
+            # If workspace_path provided, open workspace first, then add the file
+            if workspace_path and os.path.exists(workspace_path):
+                logger.info(f"Opening workspace: {workspace_path}")
+                logger.info(f"Then opening file: {file_path}")
+                # Open workspace with the file in one command
+                subprocess.Popen(
+                    [Config.CURSOR_EXECUTABLE_NAME, workspace_path, file_path],
+                    shell=True
+                )
+                logger.info("Successfully spawned cursor process with workspace and file")
+                return True, f"workspace: {workspace_path}"
+            else:
+                # Fallback: just open the file
+                logger.info(f"No workspace provided, opening file directly: {file_path}")
+                subprocess.Popen([Config.CURSOR_EXECUTABLE_NAME, file_path], shell=True)
+                logger.info("Successfully spawned cursor process with file only")
+                return True, ""
+        except Exception as e:
+            logger.warning(f"cursor command failed: {e}, falling back to os.startfile")
+            try:
+                os.startfile(file_path)
+                logger.info("Opened file via os.startfile")
+                return True, "(opened via os.startfile; 'cursor' command may not be on PATH)"
+            except Exception as e2:
+                logger.error(f"Failed to open file: {e2}")
+                return False, f"Failed to open file: {e2}"
+    
+    @staticmethod
     def open_workspace_and_file(workspace_path: Optional[str], file_path: str) -> Tuple[bool, str]:
         """
         Open a workspace/repo in Cursor, then open the specific file.

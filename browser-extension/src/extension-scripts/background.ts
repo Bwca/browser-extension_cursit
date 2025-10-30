@@ -37,7 +37,7 @@ browserAPI.runtimeOnMessageAddListener(async (request, sender, sendResponse) => 
         }
         const isMatch = storedUrl === requestRepoUrl;
         console.log(
-          `CursIt-Extension: Comparing normalized '${storedUrl}' with '${requestRepoUrl}'. Match: ${isMatch}`,
+          `CursIt-Extension: Comparing normalized '${storedUrl}' with '${requestRepoUrl}'. Match: ${isMatch}`
         );
         return isMatch;
       });
@@ -45,19 +45,33 @@ browserAPI.runtimeOnMessageAddListener(async (request, sender, sendResponse) => 
       if (repo) {
         console.log('CursIt-Extension: Found matching repository:', JSON.stringify(repo, null, 2));
         const absolutePath = `${repo.path}/${request.filePath}`;
-        const data = {
-          comment: request.comment,
-          codeSnippet: request.codeSnippet,
-          filePath: absolutePath,
-          workspacePath: repo.path, // Send workspace/repo root path
-          autoSubmit: request.autoSubmit || false,
-        };
 
-        console.log(`CursIt-Extension: Preparing to send data to server (${request.type}):`);
+        // Determine if this is a simple file open (no comment/code) or a full operation
+        const isSimpleFileOpen = !request.comment && !request.codeSnippet;
+        const endpoint = isSimpleFileOpen
+          ? 'http://localhost:5050/open-file'
+          : 'http://localhost:5050/open';
+
+        const data = isSimpleFileOpen
+          ? {
+              // Simple file open - no comment, no code snippet, no clipboard/paste operations
+              filePath: absolutePath,
+              workspacePath: repo.path,
+            }
+          : {
+              // Full operation - open file AND paste to chat
+              comment: request.comment,
+              codeSnippet: request.codeSnippet,
+              filePath: absolutePath,
+              workspacePath: repo.path,
+              autoSubmit: request.autoSubmit || false,
+            };
+
+        console.log(`CursIt-Extension: Preparing to send data to ${endpoint} (${request.type}):`);
         console.log(JSON.stringify(data, null, 2));
 
         try {
-          const response = await fetch('http://localhost:5050/open', {
+          const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -72,15 +86,18 @@ browserAPI.runtimeOnMessageAddListener(async (request, sender, sendResponse) => 
             if (sender.tab?.id) {
               await browserAPI.showPageError(
                 sender.tab.id,
-                'Failed to send to Cursor. Is the server running?',
+                'Failed to send to Cursor. Is the server running?'
               );
             }
             throw new Error(errorMsg);
           }
 
-          console.log('CursIt-Extension: Comment data sent successfully.');
+          console.log('CursIt-Extension: Request sent successfully.');
           if (sender.tab?.id) {
-            await browserAPI.showPageSuccess(sender.tab.id, 'Comment sent to Cursor!');
+            const successMessage = isSimpleFileOpen
+              ? 'File opened in Cursor!'
+              : 'Comment sent to Cursor!';
+            await browserAPI.showPageSuccess(sender.tab.id, successMessage);
           }
         } catch (error) {
           console.error('CursIt-Extension: There was a problem sending the comment data:', error);
@@ -89,7 +106,7 @@ browserAPI.runtimeOnMessageAddListener(async (request, sender, sendResponse) => 
           if (sender.tab?.id) {
             await browserAPI.showPageError(
               sender.tab.id,
-              `Failed to send to Cursor: ${errorMessage}. Is the server running?`,
+              `Failed to send to Cursor: ${errorMessage}. Is the server running?`
             );
           }
         }
@@ -100,7 +117,7 @@ browserAPI.runtimeOnMessageAddListener(async (request, sender, sendResponse) => 
         if (sender.tab?.id) {
           await browserAPI.showPageError(
             sender.tab.id,
-            'Repository not configured. Click the extension icon to set it up.',
+            'Repository not configured. Click the extension icon to set it up.'
           );
         }
       }

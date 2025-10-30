@@ -78,7 +78,7 @@ export class AddResolveButtonBuilder {
     // Remove all interactive/UI elements and redundant sections
     temp
       .querySelectorAll(
-        'button, script, style, svg, .copy-btn, .copy-btn-container, .copy-btn-tooltip',
+        'button, script, style, svg, .copy-btn, .copy-btn-container, .copy-btn-tooltip'
       )
       .forEach((el: any) => el.remove());
 
@@ -140,13 +140,21 @@ export class AddResolveButtonBuilder {
     return '';
   }
 
+  addOpenInCursorButton() {
+    // Override this in subclasses for platform-specific file header button injection
+    console.log('CursIt-Extension: addOpenInCursorButton called (no-op in base class)');
+  }
+
   build() {
     return () => {
+      // Add "Open in Cursor" buttons to file headers
+      this.addOpenInCursorButton();
+
       const commentThreads = document.querySelectorAll(
-        this.commentThreadSelector,
+        this.commentThreadSelector
       ) as NodeListOf<HTMLElement>;
       console.log(
-        `CursIt-Extension: Found ${commentThreads.length} comment threads with selector "${this.commentThreadSelector}"`,
+        `CursIt-Extension: Found ${commentThreads.length} comment threads with selector "${this.commentThreadSelector}"`
       );
 
       commentThreads.forEach((thread, index) => {
@@ -156,7 +164,7 @@ export class AddResolveButtonBuilder {
         const existingButton = thread.querySelector(`.${this.buttonClass}`);
         console.log(
           `CursIt-Extension: Thread ${index} - Already has resolve button:`,
-          !!existingButton,
+          !!existingButton
         );
 
         const actions = thread.querySelector(this.actionsSelector);
@@ -166,7 +174,7 @@ export class AddResolveButtonBuilder {
           // Get file path once when adding the button
           const filePath = this.getFilePath(thread);
           console.log(
-            `CursIt-Extension: Thread ${index} - Found file path: ${filePath || '(none)'}`,
+            `CursIt-Extension: Thread ${index} - Found file path: ${filePath || '(none)'}`
           );
 
           // Only add button if we have a valid file path
@@ -184,7 +192,7 @@ export class AddResolveButtonBuilder {
           // Store file path as data attribute
           button.setAttribute('data-file-path', filePath);
 
-          button.addEventListener('click', () => {
+          button.onclick = () => {
             const commentText = this.cleanCommentText(commentContent.innerHTML);
             const codeSnippet = this.getCodeSnippets(thread);
             // Get stored file path from data attribute (always present since we check before adding button)
@@ -204,11 +212,11 @@ export class AddResolveButtonBuilder {
             console.log(JSON.stringify(data, null, 2));
 
             this.browserAPI.runtimeSendMessage(data);
-          });
+          };
 
           console.log(
             `CursIt-Extension: Thread ${index} - Found actions area with selector "${this.actionsSelector}":`,
-            !!actions,
+            !!actions
           );
 
           if (actions) {
@@ -216,7 +224,7 @@ export class AddResolveButtonBuilder {
             console.log(`CursIt-Extension: Thread ${index} - Resolve button added successfully!`);
           } else {
             console.warn(
-              `CursIt-Extension: Thread ${index} - Could not find actions area to append button`,
+              `CursIt-Extension: Thread ${index} - Could not find actions area to append button`
             );
           }
         }
@@ -238,13 +246,13 @@ export class AddResolveButtonBuilder {
                 console.log(
                   `CursIt-Extension: Thread ${index}, Summary ${summaryIndex} - Found file path: ${
                     threadFilePath || '(none)'
-                  }`,
+                  }`
                 );
 
                 // Only add execute button if we have a valid file path
                 if (!threadFilePath) {
                   console.log(
-                    `CursIt-Extension: Thread ${index}, Summary ${summaryIndex} - Skipping execute button (no file path found)`,
+                    `CursIt-Extension: Thread ${index}, Summary ${summaryIndex} - Skipping execute button (no file path found)`
                   );
                   return;
                 }
@@ -258,7 +266,7 @@ export class AddResolveButtonBuilder {
                 // Store file path as data attribute
                 executeButton.setAttribute('data-file-path', threadFilePath);
 
-                executeButton.addEventListener('click', (e) => {
+                executeButton.onclick = (e) => {
                   e.stopPropagation(); // Prevent summary toggle
 
                   // Get the parent details element - code block should be right inside it
@@ -293,7 +301,7 @@ export class AddResolveButtonBuilder {
                       filePath = pathMatch[1].trim();
                       console.log(
                         'CursIt-Extension: Extracted file path from code block:',
-                        filePath,
+                        filePath
                       );
                     }
 
@@ -310,7 +318,7 @@ export class AddResolveButtonBuilder {
                   const repoUrl = this.getRepoUrl();
 
                   console.log(
-                    `CursIt-Extension: Execute button clicked (Thread ${index}, Summary ${summaryIndex})`,
+                    `CursIt-Extension: Execute button clicked (Thread ${index}, Summary ${summaryIndex})`
                   );
                   console.log('Code block extracted:', codeBlock.substring(0, 100) + '...');
                   console.log('File path:', filePath);
@@ -334,12 +342,12 @@ export class AddResolveButtonBuilder {
                   console.log(JSON.stringify(data, null, 2));
 
                   this.browserAPI.runtimeSendMessage(data);
-                });
+                };
 
                 // Append button right inside the summary element
                 summary.appendChild(executeButton);
                 console.log(
-                  `CursIt-Extension: Thread ${index}, Summary ${summaryIndex} - Execute button added!`,
+                  `CursIt-Extension: Thread ${index}, Summary ${summaryIndex} - Execute button added!`
                 );
               }
             }
