@@ -105,7 +105,7 @@ export class GitHubAddResolveButtonBuilder extends AddResolveButtonBuilder {
       button.textContent = 'Open in Cursor';
       button.className = 'open-in-cursor-btn';
       button.style.cssText =
-        'margin-left: 8px; padding: 4px 12px; background: #8b5cf6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500;';
+        'margin-left: 8px; padding: 4px 12px; background: #8b5cf6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;';
 
       button.onclick = () => {
         const repoUrl = this.getRepoUrl();

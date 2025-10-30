@@ -187,7 +187,7 @@ export class AddResolveButtonBuilder {
           button.textContent = this.buttonText;
           button.className = this.buttonClass;
           button.style.cssText =
-            'margin-left: 8px; padding: 4px 12px; background: #0078d4; color: white; border: none; border-radius: 2px; cursor: pointer; font-size: 12px;';
+            'margin-left: 8px; padding: 4px 12px; background: #0078d4; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;';
 
           // Store file path as data attribute
           button.setAttribute('data-file-path', filePath);
@@ -261,7 +261,7 @@ export class AddResolveButtonBuilder {
                 executeButton.textContent = 'Execute in Cursor';
                 executeButton.className = 'execute-in-cursor-btn';
                 executeButton.style.cssText =
-                  'margin-left: 12px; padding: 4px 12px; background: #107c10; color: white; border: none; border-radius: 2px; cursor: pointer; font-size: 12px; vertical-align: middle;';
+                  'margin-left: 12px; padding: 4px 12px; background: #107c10; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; vertical-align: middle;';
 
                 // Store file path as data attribute
                 executeButton.setAttribute('data-file-path', threadFilePath);
